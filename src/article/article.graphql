@@ -1,0 +1,66 @@
+type Article {
+  id: String!
+  title: String!
+  leadImage: String!
+  content: String!
+  slug: String!
+  isHidden: Boolean!
+  isHighlighted: Boolean!
+  createdAt: String!
+  updatedAt: String!
+
+  author: User
+  category: Category
+}
+
+input ArticlesGridInput {
+  limit: Int
+  page: Int
+  filter: ArticlesGridInputFilter
+}
+
+input ArticlesGridInputFilter {
+  categoryId: String
+  categorySlug: String
+  authorId: String
+  fullText: String
+}
+
+input ArticleFilterInput {
+  id: String
+  slug: String
+}
+
+input CreateArticleInput {
+  title: String!
+  leadImage: String!
+  content: String!
+  slug: String
+
+  authorId: String!
+  categoryId: String!
+}
+
+input UpdateArticleInput {
+  id: String!
+  title: String
+  leadImage: String
+  content: String
+  slug: String
+}
+
+type ArticlesListResponse {
+  total: Int!
+  rows: [Article!]!
+}
+
+type Query {
+  articles(grid: ArticlesGridInput): ArticlesListResponse!
+  article(filter: ArticleFilterInput!): Article
+}
+
+type Mutation {
+  createArticle(createArticleInput: CreateArticleInput!): Article!
+  updateArticle(updateArticleInput: UpdateArticleInput!): Article!
+  removeArticle(id: String!): Article
+}
