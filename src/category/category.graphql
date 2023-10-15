@@ -4,7 +4,7 @@ type Category {
   slug: String!
   isHidden: Boolean!
 
-  articles: [Article!]
+  articles: [Article!]!
   articlesCount: Int!
 }
 
@@ -14,7 +14,6 @@ input CreateCategoryInput {
 }
 
 input UpdateCategoryInput {
-  id: String!
   name: String
   slug: String
   isHidden: Boolean
@@ -27,6 +26,9 @@ type Query {
 
 type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
-  removeCategory(id: String!): Category
+  updateCategory(
+    id: String!
+    updateCategoryInput: UpdateCategoryInput!
+  ): Category!
+  deleteCategory(id: String!): Category
 }

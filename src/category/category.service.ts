@@ -24,11 +24,13 @@ export class CategoryService {
     }));
   }
 
-  findOne(id: string) {
-    return this.prisma.category.findUnique({
+  async findOne(id: string) {
+    const { _count, ...rest } = await this.prisma.category.findUnique({
       where: { id },
-      include: { articles: true },
+      include: { articles: true, _count: { select: { articles: true } } },
     });
+
+    return { articlesCount: _count.articles, ...rest };
   }
 
   update(id: string, { name }: UpdateCategoryInput) {
@@ -39,7 +41,7 @@ export class CategoryService {
     });
   }
 
-  remove(id: string) {
+  delete(id: string) {
     return this.prisma.category.delete({
       where: { id },
       include: { articles: true },

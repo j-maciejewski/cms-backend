@@ -36,7 +36,6 @@ export class CreateArticleInput {
 }
 
 export class UpdateArticleInput {
-    id: string;
     title?: Nullable<string>;
     leadImage?: Nullable<string>;
     content?: Nullable<string>;
@@ -49,7 +48,6 @@ export class CreateCategoryInput {
 }
 
 export class UpdateCategoryInput {
-    id: string;
     name?: Nullable<string>;
     slug?: Nullable<string>;
     isHidden?: Nullable<boolean>;
@@ -57,15 +55,12 @@ export class UpdateCategoryInput {
 
 export class CreateUserInput {
     email: string;
-    password: string;
     firstName: string;
     lastName: string;
 }
 
 export class UpdateUserInput {
-    id: string;
     email?: Nullable<string>;
-    password?: Nullable<string>;
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
     avatar?: Nullable<string>;
@@ -82,6 +77,7 @@ export class Article {
     slug: string;
     isHidden: boolean;
     isHighlighted: boolean;
+    assets: Nullable<string>[];
     createdAt: string;
     updatedAt: string;
     author?: Nullable<User>;
@@ -98,11 +94,15 @@ export abstract class IQuery {
 
     abstract article(filter: ArticleFilterInput): Nullable<Article> | Promise<Nullable<Article>>;
 
+    abstract homePageArticles(): Category[] | Promise<Category[]>;
+
+    abstract highlightedArticles(): Article[] | Promise<Article[]>;
+
     abstract categories(): Category[] | Promise<Category[]>;
 
     abstract category(id: string): Nullable<Category> | Promise<Nullable<Category>>;
 
-    abstract users(): Nullable<User>[] | Promise<Nullable<User>[]>;
+    abstract users(): User[] | Promise<User[]>;
 
     abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
@@ -110,21 +110,21 @@ export abstract class IQuery {
 export abstract class IMutation {
     abstract createArticle(createArticleInput: CreateArticleInput): Article | Promise<Article>;
 
-    abstract updateArticle(updateArticleInput: UpdateArticleInput): Article | Promise<Article>;
+    abstract updateArticle(id: string, updateArticleInput: UpdateArticleInput): Article | Promise<Article>;
 
-    abstract removeArticle(id: string): Nullable<Article> | Promise<Nullable<Article>>;
+    abstract deleteArticle(id: string): Nullable<Article> | Promise<Nullable<Article>>;
 
     abstract createCategory(createCategoryInput: CreateCategoryInput): Category | Promise<Category>;
 
-    abstract updateCategory(updateCategoryInput: UpdateCategoryInput): Category | Promise<Category>;
+    abstract updateCategory(id: string, updateCategoryInput: UpdateCategoryInput): Category | Promise<Category>;
 
-    abstract removeCategory(id: string): Nullable<Category> | Promise<Nullable<Category>>;
+    abstract deleteCategory(id: string): Nullable<Category> | Promise<Nullable<Category>>;
 
     abstract createUser(createUserInput: CreateUserInput): User | Promise<User>;
 
-    abstract updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
+    abstract updateUser(id: string, updateUserInput: UpdateUserInput): User | Promise<User>;
 
-    abstract removeUser(id: string): Nullable<User> | Promise<Nullable<User>>;
+    abstract deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export class Category {
@@ -132,7 +132,7 @@ export class Category {
     name: string;
     slug: string;
     isHidden: boolean;
-    articles?: Nullable<Article[]>;
+    articles: Article[];
     articlesCount: number;
 }
 

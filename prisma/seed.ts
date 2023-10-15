@@ -23,7 +23,7 @@ async function main() {
     ),
   );
 
-  const users = Array(getRandomNumber(10, 15))
+  const users = Array(getRandomNumber(16, 20))
     .fill(null)
     .map(() => ({
       email: faker.internet.email(),
@@ -42,12 +42,12 @@ async function main() {
         lastName: user.lastName,
         password: user.password,
         articles: {
-          create: Array(getRandomNumber(1, 3))
+          create: Array(getRandomNumber(6, 10))
             .fill(null)
             .map(() => ({
               title: faker.lorem.paragraph({ min: 1, max: 2 }),
-              leadImage: 'test',
-              content: faker.lorem.paragraphs(3, '<br/>'),
+              leadImage: `${getRandomNumber(1, 20)}.jpg`,
+              content: faker.lorem.paragraphs(5, '<br/>'),
               slug: faker.lorem.slug(5),
               category: {
                 connect: {

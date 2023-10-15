@@ -6,6 +6,8 @@ type Article {
   slug: String!
   isHidden: Boolean!
   isHighlighted: Boolean!
+  assets: [String]!
+
   createdAt: String!
   updatedAt: String!
 
@@ -42,7 +44,6 @@ input CreateArticleInput {
 }
 
 input UpdateArticleInput {
-  id: String!
   title: String
   leadImage: String
   content: String
@@ -57,10 +58,12 @@ type ArticlesListResponse {
 type Query {
   articles(grid: ArticlesGridInput): ArticlesListResponse!
   article(filter: ArticleFilterInput!): Article
+  homePageArticles: [Category!]!
+  highlightedArticles: [Article!]!
 }
 
 type Mutation {
   createArticle(createArticleInput: CreateArticleInput!): Article!
-  updateArticle(updateArticleInput: UpdateArticleInput!): Article!
-  removeArticle(id: String!): Article
+  updateArticle(id: String!, updateArticleInput: UpdateArticleInput!): Article!
+  deleteArticle(id: String!): Article
 }

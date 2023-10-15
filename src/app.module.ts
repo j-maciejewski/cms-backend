@@ -9,7 +9,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { ArticleModule } from './article/article.module';
 import { CategoryModule } from './category/category.module';
-
+import { UploadFileController } from './upload/upload.controller';
+import { UploadFileService } from './upload/upload.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -22,12 +24,19 @@ import { CategoryModule } from './category/category.module';
         outputAs: 'class',
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'assets', 'images'),
+      serveRoot: '/images',
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
     PrismaModule,
     UserModule,
     ArticleModule,
     CategoryModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, UploadFileController],
+  providers: [AppService, UploadFileService],
 })
 export class AppModule {}

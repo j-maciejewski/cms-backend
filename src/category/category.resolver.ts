@@ -25,16 +25,14 @@ export class CategoryResolver {
 
   @Mutation('updateCategory')
   update(
+    @Args('id') id: string,
     @Args('updateCategoryInput') updateCategoryInput: UpdateCategoryInput,
   ) {
-    return this.categoryService.update(
-      updateCategoryInput.id,
-      updateCategoryInput,
-    );
+    return this.categoryService.update(id, updateCategoryInput);
   }
 
-  @Mutation('removeCategory')
+  @Mutation('deleteCategory')
   remove(@Args('id') id: string) {
-    return this.categoryService.remove(id);
+    return this.categoryService.delete(id);
   }
 }

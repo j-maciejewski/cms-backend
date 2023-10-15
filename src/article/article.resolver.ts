@@ -26,16 +26,26 @@ export class ArticleResolver {
     return this.articleService.findOne(filter);
   }
 
-  @Mutation('updateArticle')
-  update(@Args('updateArticleInput') updateArticleInput: UpdateArticleInput) {
-    return this.articleService.update(
-      updateArticleInput.id,
-      updateArticleInput,
-    );
+  @Query('homePageArticles')
+  findHomePageArticles() {
+    return this.articleService.findHomePageArticles();
   }
 
-  @Mutation('removeArticle')
+  @Query('highlightedArticles')
+  findHighlightedArticles() {
+    return this.articleService.findHighlightedArticles();
+  }
+
+  @Mutation('updateArticle')
+  update(
+    @Args('id') id: string,
+    @Args('updateArticleInput') updateArticleInput: UpdateArticleInput,
+  ) {
+    return this.articleService.update(id, updateArticleInput);
+  }
+
+  @Mutation('deleteArticle')
   remove(@Args('id') id: string) {
-    return this.articleService.remove(id);
+    return this.articleService.delete(id);
   }
 }

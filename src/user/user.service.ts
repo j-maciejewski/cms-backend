@@ -6,9 +6,9 @@ import { CreateUserInput, UpdateUserInput } from 'src/types/graphql';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  create({ email, password, firstName, lastName }: CreateUserInput) {
+  create({ email, firstName, lastName }: CreateUserInput) {
     return this.prisma.user.create({
-      data: { email, password, firstName, lastName },
+      data: { email, password: 'test', firstName, lastName },
       include: { articles: true },
     });
   }
@@ -32,7 +32,7 @@ export class UserService {
     });
   }
 
-  remove(id: string) {
+  delete(id: string) {
     return this.prisma.user.delete({
       where: { id },
       include: { articles: true },

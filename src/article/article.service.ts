@@ -23,12 +23,12 @@ export class ArticleService {
     authorId,
     categoryId,
   }: CreateArticleInput) {
-    const fileName = generateFilename('png');
+    // const fileName = generateFilename('png');
 
     const data = await this.prisma.article.create({
       data: {
         title,
-        leadImage: fileName,
+        leadImage,
         content,
         slug: slug ?? title.toLowerCase(),
         author: { connect: { id: authorId } },
@@ -36,7 +36,7 @@ export class ArticleService {
       },
     });
 
-    await saveImage(leadImage, fileName);
+    // await saveImage(leadImage, fileName);
 
     return data;
   }
@@ -77,7 +77,34 @@ export class ArticleService {
     }
 
     return this.prisma.article.findFirst({
+      include: { category: true, author: true },
       where: { OR: [{ id: filter.id }, { slug: filter.slug }] },
+    });
+  }
+
+  findHomePageArticles() {
+    return this.prisma.category.findMany({
+      where: {
+        isHidden: false,
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        articles: {
+          take: 5,
+          include: { author: true },
+        },
+      },
+    });
+  }
+
+  findHighlightedArticles() {
+    return this.prisma.article.findMany({
+      where: {
+        isHidden: false,
+        isHighlighted: true,
+      },
     });
   }
 
@@ -88,7 +115,7 @@ export class ArticleService {
     });
   }
 
-  remove(id: string) {
+  delete(id: string) {
     return this.prisma.article.delete({
       where: { id },
     });
