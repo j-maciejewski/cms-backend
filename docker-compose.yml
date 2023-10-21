@@ -22,12 +22,15 @@ services:
       dockerfile: Dockerfile
     environment:
       - PORT=${PORT}
+      - WATCHPACK_POLLING=true
     ports:
       - '3001:3001'
+      - '5555:5555'
     depends_on:
       - postgres
     volumes:
-      - ./src:/app/src
+      - ./:/app
+      - /app/node_modules
     networks:
       cms-network:
         ipv4_address: 10.0.10.2

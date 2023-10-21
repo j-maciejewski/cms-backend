@@ -1,6 +1,10 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { CreateUserInput, UpdateUserInput } from 'src/types/graphql';
+import {
+  CreateUserInput,
+  UpdateUserInput,
+  UsersGridInput,
+} from 'src/types/graphql';
 
 @Resolver('User')
 export class UserResolver {
@@ -12,8 +16,8 @@ export class UserResolver {
   }
 
   @Query('users')
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Args('grid') grid?: UsersGridInput) {
+    return this.userService.findAll(grid);
   }
 
   @Query('user')

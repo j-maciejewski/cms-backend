@@ -5,11 +5,18 @@ type User {
   firstName: String!
   lastName: String!
   avatar: String
-  role: String!
+  role: RoleEnum!
   isSuspended: Boolean!
   isAnonymous: Boolean!
 
+  createdAt: String!
+
   articles: [Article!]
+}
+
+input UsersGridInput {
+  limit: Int
+  page: Int
 }
 
 input CreateUserInput {
@@ -23,13 +30,18 @@ input UpdateUserInput {
   firstName: String
   lastName: String
   avatar: String
-  role: String
+  role: RoleEnum
   isSuspended: Boolean
   isAnonymous: Boolean
 }
 
+type UsersListResponse {
+  total: Int!
+  rows: [User!]!
+}
+
 type Query {
-  users: [User!]!
+  users(grid: UsersGridInput): UsersListResponse!
   user(id: String!): User
 }
 

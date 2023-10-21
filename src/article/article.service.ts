@@ -101,6 +101,7 @@ export class ArticleService {
 
   findHighlightedArticles() {
     return this.prisma.article.findMany({
+      include: { author: true },
       where: {
         isHidden: false,
         isHighlighted: true,

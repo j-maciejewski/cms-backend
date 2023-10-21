@@ -12,6 +12,7 @@ import { CategoryModule } from './category/category.module';
 import { UploadFileController } from './upload/upload.controller';
 import { UploadFileService } from './upload/upload.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { MessageModule } from './message/message.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -35,6 +36,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     UserModule,
     ArticleModule,
     CategoryModule,
+    MessageModule,
   ],
   controllers: [AppController, UploadFileController],
   providers: [AppService, UploadFileService],

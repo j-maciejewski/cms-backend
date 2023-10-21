@@ -8,6 +8,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum RoleEnum {
+    USER = "USER",
+    ADMIN = "ADMIN"
+}
+
 export class ArticlesGridInput {
     limit?: Nullable<number>;
     page?: Nullable<number>;
@@ -53,6 +58,28 @@ export class UpdateCategoryInput {
     isHidden?: Nullable<boolean>;
 }
 
+export class MessagesGridInput {
+    limit?: Nullable<number>;
+    page?: Nullable<number>;
+}
+
+export class CreateMessageInput {
+    name: string;
+    email: string;
+    content: string;
+}
+
+export class UpdateMessageInput {
+    name?: Nullable<string>;
+    email?: Nullable<string>;
+    content?: Nullable<string>;
+}
+
+export class UsersGridInput {
+    limit?: Nullable<number>;
+    page?: Nullable<number>;
+}
+
 export class CreateUserInput {
     email: string;
     firstName: string;
@@ -64,7 +91,7 @@ export class UpdateUserInput {
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
     avatar?: Nullable<string>;
-    role?: Nullable<string>;
+    role?: Nullable<RoleEnum>;
     isSuspended?: Nullable<boolean>;
     isAnonymous?: Nullable<boolean>;
 }
@@ -102,7 +129,11 @@ export abstract class IQuery {
 
     abstract category(id: string): Nullable<Category> | Promise<Nullable<Category>>;
 
-    abstract users(): User[] | Promise<User[]>;
+    abstract messages(grid?: Nullable<MessagesGridInput>): MessagesListResponse | Promise<MessagesListResponse>;
+
+    abstract message(id: string): Nullable<Message> | Promise<Nullable<Message>>;
+
+    abstract users(grid?: Nullable<UsersGridInput>): UsersListResponse | Promise<UsersListResponse>;
 
     abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
@@ -120,6 +151,12 @@ export abstract class IMutation {
 
     abstract deleteCategory(id: string): Nullable<Category> | Promise<Nullable<Category>>;
 
+    abstract createMessage(createMessageInput: CreateMessageInput): Message | Promise<Message>;
+
+    abstract updateMessage(id: string, updateMessageInput: UpdateMessageInput): Message | Promise<Message>;
+
+    abstract deleteMessage(id: string): Nullable<Message> | Promise<Nullable<Message>>;
+
     abstract createUser(createUserInput: CreateUserInput): User | Promise<User>;
 
     abstract updateUser(id: string, updateUserInput: UpdateUserInput): User | Promise<User>;
@@ -132,8 +169,23 @@ export class Category {
     name: string;
     slug: string;
     isHidden: boolean;
+    createdAt: string;
     articles: Article[];
     articlesCount: number;
+}
+
+export class Message {
+    id: string;
+    name: string;
+    email: string;
+    content: string;
+    replySent: string;
+    createdAt: string;
+}
+
+export class MessagesListResponse {
+    total: number;
+    rows: Message[];
 }
 
 export class User {
@@ -143,10 +195,16 @@ export class User {
     firstName: string;
     lastName: string;
     avatar?: Nullable<string>;
-    role: string;
+    role: RoleEnum;
     isSuspended: boolean;
     isAnonymous: boolean;
+    createdAt: string;
     articles?: Nullable<Article[]>;
+}
+
+export class UsersListResponse {
+    total: number;
+    rows: User[];
 }
 
 type Nullable<T> = T | null;

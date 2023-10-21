@@ -4,6 +4,8 @@ type Category {
   slug: String!
   isHidden: Boolean!
 
+  createdAt: String!
+
   articles: [Article!]!
   articlesCount: Int!
 }

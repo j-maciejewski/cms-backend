@@ -1,0 +1,42 @@
+type Message {
+  id: String!
+  name: String!
+  email: String!
+  content: String!
+  replySent: String!
+
+  createdAt: String!
+}
+
+input MessagesGridInput {
+  limit: Int
+  page: Int
+}
+
+input CreateMessageInput {
+  name: String!
+  email: String!
+  content: String!
+}
+
+input UpdateMessageInput {
+  name: String
+  email: String
+  content: String
+}
+
+type MessagesListResponse {
+  total: Int!
+  rows: [Message!]!
+}
+
+type Query {
+  messages(grid: MessagesGridInput): MessagesListResponse!
+  message(id: String!): Message
+}
+
+type Mutation {
+  createMessage(createMessageInput: CreateMessageInput!): Message!
+  updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): Message!
+  deleteMessage(id: String!): Message
+}

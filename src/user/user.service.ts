@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { DEFAULT_PAGINATION } from 'src/consts';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserInput, UpdateUserInput } from 'src/types/graphql';
+import {
+  CreateUserInput,
+  UpdateUserInput,
+  UsersGridInput,
+} from 'src/types/graphql';
 
 @Injectable()
 export class UserService {
@@ -13,8 +18,16 @@ export class UserService {
     });
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  async findAll(grid?: UsersGridInput) {
+    const usersCount = await this.prisma.user.count();
+
+    const usersRows = await this.prisma.user.findMany({
+      orderBy: [{ createdAt: 'desc' }],
+      skip: (grid?.page - 1) * (grid?.limit ?? DEFAULT_PAGINATION) || 0,
+      take: grid?.limit ?? DEFAULT_PAGINATION,
+    });
+
+    return { total: usersCount, rows: usersRows };
   }
 
   findOne(id: string) {

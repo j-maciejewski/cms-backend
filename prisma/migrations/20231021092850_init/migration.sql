@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+CREATE TYPE "RoleEnum" AS ENUM ('USER', 'ADMIN');
 
 -- CreateTable
 CREATE TABLE "Article" (
@@ -25,6 +25,7 @@ CREATE TABLE "Category" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "isHidden" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
@@ -37,12 +38,25 @@ CREATE TABLE "User" (
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "avatar" TEXT,
-    "role" "Role" NOT NULL DEFAULT 'USER',
+    "role" "RoleEnum" NOT NULL DEFAULT 'USER',
     "isSuspended" BOOLEAN NOT NULL DEFAULT false,
     "isAnonymous" BOOLEAN NOT NULL DEFAULT false,
     "refreshToken" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Message" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "replySent" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

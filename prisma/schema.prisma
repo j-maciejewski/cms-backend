@@ -37,6 +37,8 @@ model Category {
   slug          String      @unique
   isHidden      Boolean     @default(false)
 
+  createdAt     DateTime    @default(now())
+
   articles      Article[]
 }
 
@@ -47,15 +49,27 @@ model User {
   firstName     String
   lastName      String
   avatar        String?
-  role          Role        @default(USER)
+  role          RoleEnum    @default(USER)
   isSuspended   Boolean     @default(false)
   isAnonymous   Boolean     @default(false)
   refreshToken  String?
 
+  createdAt     DateTime    @default(now())
+
   articles      Article[]
 }
 
-enum Role {
+model Message {
+  id            String      @id @default(uuid())
+  name          String
+  email         String
+  content       String
+  replySent     Boolean     @default(false)
+  
+  createdAt     DateTime    @default(now())
+}
+
+enum RoleEnum {
   USER
   ADMIN
 }

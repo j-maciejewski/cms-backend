@@ -59,6 +59,18 @@ async function main() {
       },
     });
   }
+
+  const messages = Array(25)
+    .fill(null)
+    .map(() => ({
+      name: faker.internet.userName(),
+      email: faker.internet.email(),
+      content: faker.lorem.paragraphs(5, '\n'),
+    }));
+
+  await prisma.$transaction(
+    messages.map((messageData) => prisma.message.create({ data: messageData })),
+  );
 }
 main()
   .then(async () => {
