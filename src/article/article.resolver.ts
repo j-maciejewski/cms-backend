@@ -11,10 +11,29 @@ import {
 export class ArticleResolver {
   constructor(private readonly articleService: ArticleService) {}
 
-  @Mutation('createArticle')
-  create(@Args('createArticleInput') createArticleInput: CreateArticleInput) {
-    return this.articleService.create(createArticleInput);
+  // Public
+
+  @Query('publicArticles')
+  findAllPublic(@Args('grid') grid?: ArticlesGridInput) {
+    return this.articleService.findAllPublic(grid);
   }
+
+  @Query('publicArticle')
+  findOnePublic(@Args('filter') filter: ArticleFilterInput) {
+    return this.articleService.findOnePublic(filter);
+  }
+
+  @Query('publicHomePageArticles')
+  findHomePageArticles() {
+    return this.articleService.findHomePageArticles();
+  }
+
+  @Query('publicHighlightedArticles')
+  findHighlightedArticles() {
+    return this.articleService.findHighlightedArticles();
+  }
+
+  // Protected
 
   @Query('articles')
   findAll(@Args('grid') grid?: ArticlesGridInput) {
@@ -26,14 +45,9 @@ export class ArticleResolver {
     return this.articleService.findOne(filter);
   }
 
-  @Query('homePageArticles')
-  findHomePageArticles() {
-    return this.articleService.findHomePageArticles();
-  }
-
-  @Query('highlightedArticles')
-  findHighlightedArticles() {
-    return this.articleService.findHighlightedArticles();
+  @Mutation('createArticle')
+  create(@Args('createArticleInput') createArticleInput: CreateArticleInput) {
+    return this.articleService.create(createArticleInput);
   }
 
   @Mutation('updateArticle')

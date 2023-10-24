@@ -1,0 +1,13 @@
+type LoginResponse {
+  accessToken: String!
+}
+
+type Query {
+  activeUser: User!
+}
+
+type Mutation {
+  login(email: String!, password: String!): LoginResponse!
+  logout: Boolean
+  refreshToken: Boolean
+}

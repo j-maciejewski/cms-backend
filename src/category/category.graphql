@@ -1,3 +1,11 @@
+type PublicCategory {
+  id: String!
+  name: String!
+  slug: String!
+
+  articles: [PublicArticle!]!
+}
+
 type Category {
   id: String!
   name: String!
@@ -22,6 +30,7 @@ input UpdateCategoryInput {
 }
 
 type Query {
+  publicCategories: [PublicCategory!]!
   categories: [Category!]!
   category(id: String!): Category
 }

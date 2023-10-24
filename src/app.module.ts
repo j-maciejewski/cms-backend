@@ -13,10 +13,13 @@ import { UploadFileController } from './upload/upload.controller';
 import { UploadFileService } from './upload/upload.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MessageModule } from './message/message.module';
+import { AuthModule } from './auth/auth.module';
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      context: ({ req, res }) => ({ req, res }),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       typePaths: ['./**/*.graphql'],
@@ -37,6 +40,7 @@ import { MessageModule } from './message/message.module';
     ArticleModule,
     CategoryModule,
     MessageModule,
+    AuthModule,
   ],
   controllers: [AppController, UploadFileController],
   providers: [AppService, UploadFileService],

@@ -1,3 +1,16 @@
+type PublicArticle {
+  id: String!
+  title: String!
+  leadImage: String!
+  content: String!
+  slug: String!
+  createdAt: String!
+  updatedAt: String!
+
+  author: User
+  category: PublicCategory
+}
+
 type Article {
   id: String!
   title: String!
@@ -50,16 +63,24 @@ input UpdateArticleInput {
   slug: String
 }
 
+type PublicArticlesListResponse {
+  total: Int!
+  rows: [PublicArticle!]!
+}
+
 type ArticlesListResponse {
   total: Int!
   rows: [Article!]!
 }
 
 type Query {
+  publicArticles(grid: ArticlesGridInput): PublicArticlesListResponse!
+  publicArticle(filter: ArticleFilterInput!): PublicArticle
+  publicHomePageArticles: [PublicCategory!]!
+  publicHighlightedArticles: [PublicArticle!]!
+
   articles(grid: ArticlesGridInput): ArticlesListResponse!
   article(filter: ArticleFilterInput!): Article
-  homePageArticles: [Category!]!
-  highlightedArticles: [Article!]!
 }
 
 type Mutation {

@@ -36,7 +36,7 @@ type Query {
 }
 
 type Mutation {
-  createMessage(createMessageInput: CreateMessageInput!): Message!
+  createMessage(createMessageInput: CreateMessageInput!): Boolean!
   updateMessage(id: String!, updateMessageInput: UpdateMessageInput!): Message!
   deleteMessage(id: String!): Message
 }

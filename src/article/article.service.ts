@@ -41,6 +41,59 @@ export class ArticleService {
     return data;
   }
 
+  async findAllPublic(grid?: ArticlesGridInput) {
+    const filters: Prisma.ArticleWhereInput = {
+      category: {
+        slug: grid?.filter?.categorySlug,
+      },
+      categoryId: grid?.filter?.categoryId,
+      authorId: grid?.filter?.authorId,
+      ...(grid?.filter?.fullText
+        ? { title: { contains: grid?.filter?.fullText, mode: 'insensitive' } }
+        : {}),
+      isHidden: false,
+    };
+
+    const articlesCount = await this.prisma.article.count({
+      where: filters,
+    });
+
+    const articlesRows = await this.prisma.article.findMany({
+      orderBy: [{ createdAt: 'desc' }],
+      where: filters,
+      skip: (grid?.page - 1) * (grid?.limit ?? DEFAULT_PAGINATION) || 0,
+      take: grid?.limit ?? DEFAULT_PAGINATION,
+      select: {
+        id: true,
+        title: true,
+        leadImage: true,
+        content: true,
+        slug: true,
+        createdAt: true,
+        updatedAt: true,
+
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            isAnonymous: true,
+          },
+        },
+
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+      },
+    });
+
+    return { total: articlesCount, rows: articlesRows };
+  }
+
   async findAll(grid?: ArticlesGridInput) {
     const filters: Prisma.ArticleWhereInput = {
       category: {
@@ -66,6 +119,20 @@ export class ArticleService {
     });
 
     return { total: articlesCount, rows: articlesRows };
+  }
+
+  findOnePublic(filter: ArticleFilterInput) {
+    if (filter.id != null && filter.slug != null) {
+      throw new PrismaClientKnownRequestError(
+        'Provide only one filter variables',
+        { code: '404', clientVersion: '1.1.1' },
+      );
+    }
+
+    return this.prisma.article.findFirst({
+      include: { category: true, author: true },
+      where: { OR: [{ id: filter.id }, { slug: filter.slug }] },
+    });
   }
 
   findOne(filter: ArticleFilterInput) {

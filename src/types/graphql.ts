@@ -96,6 +96,18 @@ export class UpdateUserInput {
     isAnonymous?: Nullable<boolean>;
 }
 
+export class PublicArticle {
+    id: string;
+    title: string;
+    leadImage: string;
+    content: string;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+    author?: Nullable<User>;
+    category?: Nullable<PublicCategory>;
+}
+
 export class Article {
     id: string;
     title: string;
@@ -111,19 +123,32 @@ export class Article {
     category?: Nullable<Category>;
 }
 
+export class PublicArticlesListResponse {
+    total: number;
+    rows: PublicArticle[];
+}
+
 export class ArticlesListResponse {
     total: number;
     rows: Article[];
 }
 
 export abstract class IQuery {
+    abstract publicArticles(grid?: Nullable<ArticlesGridInput>): PublicArticlesListResponse | Promise<PublicArticlesListResponse>;
+
+    abstract publicArticle(filter: ArticleFilterInput): Nullable<PublicArticle> | Promise<Nullable<PublicArticle>>;
+
+    abstract publicHomePageArticles(): PublicCategory[] | Promise<PublicCategory[]>;
+
+    abstract publicHighlightedArticles(): PublicArticle[] | Promise<PublicArticle[]>;
+
     abstract articles(grid?: Nullable<ArticlesGridInput>): ArticlesListResponse | Promise<ArticlesListResponse>;
 
     abstract article(filter: ArticleFilterInput): Nullable<Article> | Promise<Nullable<Article>>;
 
-    abstract homePageArticles(): Category[] | Promise<Category[]>;
+    abstract activeUser(): User | Promise<User>;
 
-    abstract highlightedArticles(): Article[] | Promise<Article[]>;
+    abstract publicCategories(): PublicCategory[] | Promise<PublicCategory[]>;
 
     abstract categories(): Category[] | Promise<Category[]>;
 
@@ -145,13 +170,19 @@ export abstract class IMutation {
 
     abstract deleteArticle(id: string): Nullable<Article> | Promise<Nullable<Article>>;
 
+    abstract login(email: string, password: string): LoginResponse | Promise<LoginResponse>;
+
+    abstract logout(): Nullable<boolean> | Promise<Nullable<boolean>>;
+
+    abstract refreshToken(): Nullable<boolean> | Promise<Nullable<boolean>>;
+
     abstract createCategory(createCategoryInput: CreateCategoryInput): Category | Promise<Category>;
 
     abstract updateCategory(id: string, updateCategoryInput: UpdateCategoryInput): Category | Promise<Category>;
 
     abstract deleteCategory(id: string): Nullable<Category> | Promise<Nullable<Category>>;
 
-    abstract createMessage(createMessageInput: CreateMessageInput): Message | Promise<Message>;
+    abstract createMessage(createMessageInput: CreateMessageInput): boolean | Promise<boolean>;
 
     abstract updateMessage(id: string, updateMessageInput: UpdateMessageInput): Message | Promise<Message>;
 
@@ -162,6 +193,17 @@ export abstract class IMutation {
     abstract updateUser(id: string, updateUserInput: UpdateUserInput): User | Promise<User>;
 
     abstract deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
+}
+
+export class LoginResponse {
+    accessToken: string;
+}
+
+export class PublicCategory {
+    id: string;
+    name: string;
+    slug: string;
+    articles: PublicArticle[];
 }
 
 export class Category {
@@ -188,10 +230,17 @@ export class MessagesListResponse {
     rows: Message[];
 }
 
+export class PublicUser {
+    id: string;
+    firstName: string;
+    lastName: string;
+    avatar?: Nullable<string>;
+    isAnonymous: boolean;
+}
+
 export class User {
     id: string;
     email: string;
-    password: string;
     firstName: string;
     lastName: string;
     avatar?: Nullable<string>;

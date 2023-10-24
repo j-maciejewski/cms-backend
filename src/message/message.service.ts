@@ -11,10 +11,12 @@ import {
 export class MessageService {
   constructor(private prisma: PrismaService) {}
 
-  create({ name, email, content }: CreateMessageInput) {
-    return this.prisma.message.create({
+  async create({ name, email, content }: CreateMessageInput) {
+    this.prisma.message.create({
       data: { name, email, content },
     });
+
+    return true;
   }
 
   async findAll(grid?: MessagesGridInput) {

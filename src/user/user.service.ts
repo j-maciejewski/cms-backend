@@ -13,6 +13,7 @@ export class UserService {
 
   create({ email, firstName, lastName }: CreateUserInput) {
     return this.prisma.user.create({
+      // TODO bcrypt pass
       data: { email, password: 'test', firstName, lastName },
       include: { articles: true },
     });
@@ -34,6 +35,12 @@ export class UserService {
     return this.prisma.user.findUnique({
       where: { id },
       include: { articles: true },
+    });
+  }
+
+  findOneByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
     });
   }
 

@@ -13,6 +13,21 @@ export class CategoryService {
     });
   }
 
+  async findAllPublic() {
+    const categories = await this.prisma.category.findMany({
+      where: {
+        isHidden: false,
+      },
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+      },
+    });
+
+    return categories;
+  }
+
   async findAll() {
     const categories = await this.prisma.category.findMany({
       include: { articles: true, _count: { select: { articles: true } } },

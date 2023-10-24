@@ -1,7 +1,14 @@
+type PublicUser {
+  id: String!
+  firstName: String!
+  lastName: String!
+  avatar: String
+  isAnonymous: Boolean!
+}
+
 type User {
   id: String!
   email: String!
-  password: String!
   firstName: String!
   lastName: String!
   avatar: String
