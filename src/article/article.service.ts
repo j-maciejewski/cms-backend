@@ -9,20 +9,17 @@ import {
   CreateArticleInput,
   UpdateArticleInput,
 } from 'src/types/graphql';
+import { generateSlug } from 'src/utils';
 import { generateFilename, saveImage } from 'src/utils/saveImage';
 
 @Injectable()
 export class ArticleService {
   constructor(private prisma: PrismaService) {}
 
-  async create({
-    title,
-    leadImage,
-    content,
-    slug,
-    authorId,
-    categoryId,
-  }: CreateArticleInput) {
+  async create(
+    { title, leadImage, content, slug, categoryId }: CreateArticleInput,
+    authorId: string,
+  ) {
     // const fileName = generateFilename('png');
 
     const data = await this.prisma.article.create({
@@ -30,7 +27,7 @@ export class ArticleService {
         title,
         leadImage,
         content,
-        slug: slug ?? title.toLowerCase(),
+        slug: slug ?? generateSlug(title),
         author: { connect: { id: authorId } },
         category: { connect: { id: categoryId } },
       },
@@ -59,7 +56,7 @@ export class ArticleService {
     });
 
     const articlesRows = await this.prisma.article.findMany({
-      orderBy: [{ createdAt: 'desc' }],
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       where: filters,
       skip: (grid?.page - 1) * (grid?.limit ?? DEFAULT_PAGINATION) || 0,
       take: grid?.limit ?? DEFAULT_PAGINATION,
@@ -112,7 +109,7 @@ export class ArticleService {
 
     const articlesRows = await this.prisma.article.findMany({
       include: { category: true, author: true },
-      orderBy: [{ createdAt: 'desc' }],
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       where: filters,
       skip: (grid?.page - 1) * (grid?.limit ?? DEFAULT_PAGINATION) || 0,
       take: grid?.limit ?? DEFAULT_PAGINATION,
@@ -131,7 +128,10 @@ export class ArticleService {
 
     return this.prisma.article.findFirst({
       include: { category: true, author: true },
-      where: { OR: [{ id: filter.id }, { slug: filter.slug }] },
+      where: {
+        isHidden: false,
+        OR: [{ id: filter.id }, { slug: filter.slug }],
+      },
     });
   }
 
@@ -160,6 +160,7 @@ export class ArticleService {
         slug: true,
         articles: {
           take: 5,
+          orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
           include: { author: true },
         },
       },
@@ -169,6 +170,7 @@ export class ArticleService {
   findHighlightedArticles() {
     return this.prisma.article.findMany({
       include: { author: true },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       where: {
         isHidden: false,
         isHighlighted: true,
@@ -176,10 +178,13 @@ export class ArticleService {
     });
   }
 
-  update(id: string, { title }: UpdateArticleInput) {
+  update(
+    id: string,
+    { title, slug, isHidden, isHighlighted }: UpdateArticleInput,
+  ) {
     return this.prisma.article.update({
       where: { id },
-      data: { title },
+      data: { title, slug, isHidden, isHighlighted },
     });
   }
 

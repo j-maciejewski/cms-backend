@@ -36,7 +36,6 @@ export class CreateArticleInput {
     leadImage: string;
     content: string;
     slug?: Nullable<string>;
-    authorId: string;
     categoryId: string;
 }
 
@@ -45,6 +44,9 @@ export class UpdateArticleInput {
     leadImage?: Nullable<string>;
     content?: Nullable<string>;
     slug?: Nullable<string>;
+    isHidden?: Nullable<boolean>;
+    isHighlighted?: Nullable<boolean>;
+    categoryId?: Nullable<string>;
 }
 
 export class CreateCategoryInput {

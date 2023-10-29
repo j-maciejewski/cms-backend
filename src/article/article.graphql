@@ -52,7 +52,6 @@ input CreateArticleInput {
   content: String!
   slug: String
 
-  authorId: String!
   categoryId: String!
 }
 
@@ -61,6 +60,10 @@ input UpdateArticleInput {
   leadImage: String
   content: String
   slug: String
+  isHidden: Boolean
+  isHighlighted: Boolean
+  
+  categoryId: String
 }
 
 type PublicArticlesListResponse {

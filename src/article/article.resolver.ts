@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { ArticleService } from './article.service';
 import {
   ArticleFilterInput,
@@ -6,6 +6,8 @@ import {
   CreateArticleInput,
   UpdateArticleInput,
 } from 'src/types/graphql';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver('Article')
 export class ArticleResolver {
@@ -36,21 +38,31 @@ export class ArticleResolver {
   // Protected
 
   @Query('articles')
+  @UseGuards(JwtAuthGuard)
   findAll(@Args('grid') grid?: ArticlesGridInput) {
     return this.articleService.findAll(grid);
   }
 
   @Query('article')
+  @UseGuards(JwtAuthGuard)
   findOne(@Args('filter') filter: ArticleFilterInput) {
     return this.articleService.findOne(filter);
   }
 
   @Mutation('createArticle')
-  create(@Args('createArticleInput') createArticleInput: CreateArticleInput) {
-    return this.articleService.create(createArticleInput);
+  @UseGuards(JwtAuthGuard)
+  create(
+    @Args('createArticleInput') createArticleInput: CreateArticleInput,
+    @Context() context,
+  ) {
+    return this.articleService.create(
+      createArticleInput,
+      context.req.user.data.id,
+    );
   }
 
   @Mutation('updateArticle')
+  @UseGuards(JwtAuthGuard)
   update(
     @Args('id') id: string,
     @Args('updateArticleInput') updateArticleInput: UpdateArticleInput,
@@ -59,6 +71,7 @@ export class ArticleResolver {
   }
 
   @Mutation('deleteArticle')
+  @UseGuards(JwtAuthGuard)
   remove(@Args('id') id: string) {
     return this.articleService.delete(id);
   }

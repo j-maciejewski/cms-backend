@@ -17,12 +17,16 @@ export class CategoryService {
     const categories = await this.prisma.category.findMany({
       where: {
         isHidden: false,
+        articles: {
+          some: {},
+        },
       },
       select: {
         id: true,
         slug: true,
         name: true,
       },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     });
 
     return categories;
@@ -31,6 +35,7 @@ export class CategoryService {
   async findAll() {
     const categories = await this.prisma.category.findMany({
       include: { articles: true, _count: { select: { articles: true } } },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     });
 
     return categories.map(({ _count, ...rest }) => ({
@@ -48,11 +53,10 @@ export class CategoryService {
     return { articlesCount: _count.articles, ...rest };
   }
 
-  update(id: string, { name }: UpdateCategoryInput) {
+  update(id: string, { name, slug, isHidden }: UpdateCategoryInput) {
     return this.prisma.category.update({
       where: { id },
-      data: { name },
-      include: { articles: true },
+      data: { name, slug, isHidden },
     });
   }
 
